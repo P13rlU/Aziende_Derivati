@@ -1,0 +1,54 @@
+tags:
+  - Dipendente
+
+summary: Aggiorna un dipendente esistente
+description: Modifica i dati di un dipendente esistente usando l’ID e un corpo JSON opzionale.
+
+parameters:
+  - name: id
+    in: path
+    description: ID del dipendente da modificare
+    required: true
+    schema:
+      type: string
+
+  - name: body
+    in: body
+    description: Campi da aggiornare (opzionali)
+    required: false
+    schema:
+      type: object
+      properties:
+        nome:
+          type: string
+        cognome:
+          type: string
+        stipendio:
+          type: number
+        settore:
+          type: string
+          enum:
+            - produzione
+            - vendita
+            - direzione
+            - Controllo Qualità
+        categoria:
+          type: string
+          enum:
+            - latte
+            - carne
+            - grano
+
+responses:
+  200:
+    description: Dipendente aggiornato correttamente
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Dipendente'
+  400:
+    description: Dati non validi
+  404:
+    description: Dipendente non trovato
+  500:
+    description: Errore interno durante l’aggiornamento

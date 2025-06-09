@@ -1,0 +1,48 @@
+tags:
+  - Cliente
+
+summary: Crea un nuovo cliente
+description: Endpoint per creare un nuovo cliente inviando un oggetto JSON con tutti i campi richiesti.
+
+parameters:
+  - name: body
+    in: body
+    description: Dati del cliente da creare
+    required: true
+    schema:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: 'Mario'
+        cognome:
+          type: string
+          example: 'Rossi'
+        citta:
+          type: string
+          example: 'Milano'
+      required:
+        - nome
+        - cognome
+        - citta
+
+responses:
+  201:
+    description: Cliente creato correttamente
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id_cliente:
+              type: integer
+            nome:
+              type: string
+            cognome:
+              type: string
+            citta:
+              type: string
+  400:
+    description: Dati mancanti o non validi
+  500:
+    description: Errore interno durante la creazione

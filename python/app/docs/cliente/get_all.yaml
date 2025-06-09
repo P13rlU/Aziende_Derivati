@@ -1,0 +1,37 @@
+tags:
+  - Cliente
+
+summary: Restituisce tutti i clienti
+description: Endpoint che recupera la lista completa dei clienti dal database.
+
+responses:
+  200:
+    description: Lista di clienti
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id_cliente:
+                type: integer
+              nome:
+                type: string
+              cognome:
+                type: string
+              citta:
+                type: string
+            example:
+              - id_cliente: 1
+                nome: "Mario"
+                cognome: "Rossi"
+                citta: "Milano"
+              - id_cliente: 2
+                nome: "Luigi"
+                cognome: "Verdi"
+                citta: "Roma"
+  404:
+    description: Nessun cliente trovato
+  500:
+    description: Errore interno del server

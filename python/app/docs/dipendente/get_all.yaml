@@ -1,0 +1,44 @@
+tags:
+  - Dipendente
+
+summary: Restituisce tutti i dipendenti
+description: Endpoint che recupera la lista completa dei dipendenti dal database.
+
+responses:
+  200:
+    description: Lista di dipendenti
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id_dipendente:
+                type: string
+              nome:
+                type: string
+              cognome:
+                type: string
+              stipendio:
+                type: number
+              settore:
+                type: string
+              categoria:
+                type: string
+            example:
+              - id_dipendente: "D1"
+                nome: "Mario"
+                cognome: "Rossi"
+                stipendio: 1500.00
+                settore: "vendita"
+                categoria: "latte"
+              - id_dipendente: "D2"
+                nome: "Luigi"
+                cognome: "Verdi"
+                stipendio: 1400.00
+                settore: "produzione"
+                categoria: "grano"
+
+  500:
+    description: Errore interno del server

@@ -1,0 +1,28 @@
+tags:
+  - Dipendente
+
+summary: Elimina un dipendente
+description: Cancella un dipendente dal database usando il proprio ID.
+parameters:
+  - name: id
+    in: path
+    description: ID del dipendente da eliminare
+    required: true
+    schema:
+      type: string
+
+responses:
+  200:
+    description: Dipendente eliminato correttamente
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Dipendente eliminato con successo"
+  404:
+    description: Dipendente non trovato
+  500:
+    description: Errore interno durante l’eliminazione

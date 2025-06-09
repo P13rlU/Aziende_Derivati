@@ -1,0 +1,39 @@
+tags:
+  - Cliente
+
+summary: Restituisce un cliente per ID
+description: Recupera i dati di un cliente specifico usando l'ID fornito nell'URL.
+
+parameters:
+  - name: id
+    in: path
+    description: ID del cliente da recuperare
+    required: true
+    schema:
+      type: integer
+
+responses:
+  200:
+    description: Dati del cliente
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id_cliente:
+              type: integer
+            nome:
+              type: string
+            cognome:
+              type: string
+            citta:
+              type: string
+          example:
+            id_cliente: 1
+            nome: "Mario"
+            cognome: "Rossi"
+            citta: "Milano"
+  404:
+    description: Cliente non trovato
+  500:
+    description: Errore interno del server

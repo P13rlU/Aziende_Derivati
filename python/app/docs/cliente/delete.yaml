@@ -1,0 +1,29 @@
+tags:
+  - Cliente
+
+summary: Elimina un cliente
+description: Cancella un cliente dal database usando il proprio ID.
+
+parameters:
+  - name: id
+    in: path
+    description: ID del cliente da eliminare
+    required: true
+    schema:
+      type: integer
+
+responses:
+  200:
+    description: Cliente eliminato correttamente
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Cliente eliminato con successo"
+  404:
+    description: Cliente non trovato
+  500:
+    description: Errore interno durante l'eliminazione

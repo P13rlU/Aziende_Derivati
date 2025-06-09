@@ -1,0 +1,69 @@
+tags:
+  - Dipendente
+
+summary: Crea un nuovo dipendente
+description: Endpoint per creare un nuovo dipendente inviando un oggetto JSON con tutti i campi richiesti.
+
+parameters:
+  - name: body
+    in: body
+    description: Dati del dipendente da creare
+    required: true
+    schema:
+      type: object
+      properties:
+        id_dipendente:
+          type: string
+          example: 'D1'
+        nome:
+          type: string
+          example: 'Mario'
+        cognome:
+          type: string
+          example: 'Rossi'
+        stipendio:
+          type: number
+          example: 1500.00
+        settore:
+          type: string
+          enum:
+            - produzione
+            - vendita
+            - direzione
+            - Controllo Qualità
+        categoria:
+          type: string
+          enum:
+            - latte
+            - carne
+            - grano
+      required:
+        - id_dipendente
+        - nome
+        - cognome
+        - settore
+
+responses:
+  201:
+    description: Dipendente creato correttamente
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id_dipendente:
+              type: string
+            nome:
+              type: string
+            cognome:
+              type: string
+            stipendio:
+              type: number
+            settore:
+              type: string
+            categoria:
+              type: string
+  400:
+    description: Dati mancanti o non validi
+  500:
+    description: Errore interno durante la creazione

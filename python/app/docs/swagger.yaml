@@ -1,0 +1,1232 @@
+swagger: '2.0'
+info:
+  title: API Gestionale Dipendenti
+  description: Documentazione API per la gestione dei dipendenti
+  version: "1.0"
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /dipendenti/:
+    get:
+      summary: Ottieni tutti i dipendenti
+      tags:
+        - Dipendenti
+
+      parameters:
+        - name: page
+          in: query
+          description: Numero della pagina da restituire
+          default: 1
+          required: false
+          type: integer
+
+        - name: per_page
+          in: query
+          description: Numero di dipendenti per pagina
+          default: 10
+          required: false
+          type: integer
+
+      responses:
+        200:
+          description: Lista di Dipendenti
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Dipendente'
+              pagination:
+                type: object
+                properties:
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+            example:
+              current_page: 1
+              items: [
+                {
+                  "categoria": null,
+                  "cognome": "De Sciglio",
+                  "fatture": [ ],
+                  "id_dipendente": "C1",
+                  "nome": "Mattia",
+                  "settore": "Controllo Qualità",
+                  "stipendio": 1350
+                },
+                {
+                  "categoria": null,
+                  "cognome": "Bernardeschi",
+                  "fatture": [ ],
+                  "id_dipendente": "C2",
+                  "nome": "Federico",
+                  "settore": "Controllo Qualità",
+                  "stipendio": 1100
+                }
+              ]
+              pagination:
+                per_page: 10
+                total: 150
+                pages: 15
+        404:
+          description: Nessun dipendente trovato
+
+    post:
+      summary: Crea un nuovo dipendente
+      tags:
+        - Dipendenti
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Dipendente'
+      responses:
+        201:
+          description: Dipendente creato
+          schema:
+            $ref: '#/definitions/Dipendente'
+        400:
+          description: Dati non validi
+        500:
+          description: Errore durante la creazione
+
+  /dipendenti/{id_dipendente}:
+    get:
+      summary: Ottieni un dipendente specifico
+      tags:
+        - Dipendenti
+      parameters:
+        - name: id_dipendente
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: Dipendente trovato
+          schema:
+            $ref: '#/definitions/Dipendente'
+        404:
+          description: Dipendente non trovato
+
+    put:
+      summary: Aggiorna un dipendente
+      tags:
+        - Dipendenti
+      parameters:
+        - name: id_dipendente
+          in: path
+          type: string
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Dipendente'
+      responses:
+        200:
+          description: Dipendente aggiornato
+        400:
+          description: Dati non validi
+        404:
+          description: Dipendente non trovato
+        500:
+          description: Errore durante l'aggiornamento
+
+    delete:
+      summary: Elimina un dipendente
+      tags:
+        - Dipendenti
+      parameters:
+        - name: id_dipendente
+          in: path
+          type: string
+          required: true
+      responses:
+        204:
+          description: Eliminazione riuscita
+        404:
+          description: Dipendente non trovato
+        500:
+          description: Errore durante l'eliminazione
+
+  /dipendenti/top_venditore:
+    get:
+      summary: Restituisce il top venditore
+      tags:
+        - Dipendenti
+      responses:
+        200:
+          description: Top venditore restituito
+          schema:
+            $ref: '#/definitions/Dipendente'
+        404:
+          description: Nessun venditore trovato
+
+  /clienti/:
+    get:
+      summary: Ottieni tutti i clienti
+      tags:
+        - Clienti
+
+      parameters:
+        - name: page
+          in: query
+          description: Numero della pagina da restituire
+          default: 1
+          required: false
+          type: integer
+
+        - name: per_page
+          in: query
+          description: Numero di clienti per pagina
+          default: 10
+          required: false
+          type: integer
+
+      responses:
+        200:
+          description: Lista di clienti
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Cliente'
+              pagination:
+                type: object
+                properties:
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+            example:
+              current_page: 1
+              items: [
+                {
+                  "id_cliente": 1,
+                  "nome": "Mario",
+                  "cognome": "Rossi",
+                  "citta": "Roma",
+                  "codice_fiscale": "RSSMRA85M01H501Z"
+                },
+                {
+                  "id_cliente": 2,
+                  "nome": "Luigi",
+                  "cognome": "Bianchi",
+                  "citta": "Milano",
+                  "codice_fiscale": "BNCGLU85M01H501Z"
+                }
+              ]
+              pagination:
+                per_page: 10
+                total: 150
+                pages: 15
+        404:
+            description: Nessun cliente trovato
+
+    post:
+      summary: Crea un nuovo cliente
+      tags:
+        - Clienti
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Cliente'
+      responses:
+        201:
+          description: Cliente creato
+          schema:
+            $ref: '#/definitions/Cliente'
+        400:
+          description: Dati non validi
+        500:
+          description: Errore durante la creazione
+
+  /clienti/{id_cliente}:
+    get:
+      summary: Ottieni un cliente
+      tags:
+        - Clienti
+      parameters:
+        - name: id_cliente
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Cliente trovato
+          schema:
+            $ref: '#/definitions/Cliente'
+        404:
+          description: Cliente non trovato
+
+    put:
+      summary: Aggiorna un cliente
+      tags:
+        - Clienti
+      parameters:
+        - name: id_cliente
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Cliente'
+      responses:
+        200:
+          description: Cliente aggiornato
+          schema:
+            $ref: '#/definitions/Cliente'
+        400:
+          description: Dati non validi
+        404:
+          description: Cliente non trovato
+        500:
+          description: Errore durante l'aggiornamento
+
+    delete:
+      summary: Elimina un cliente
+      tags:
+        - Clienti
+      parameters:
+        - name: id_cliente
+          in: path
+          required: true
+          type: integer
+      responses:
+        204:
+          description: Cliente eliminato
+        404:
+          description: Cliente non trovato
+        500:
+          description: Errore durante l'eliminazione
+
+  /fatture/:
+    get:
+      summary: Ottieni tutte le fatture
+      tags:
+        - Fatture
+
+      parameters:
+        - name: page
+          in: query
+          description: Numero della pagina da restituire
+          default: 1
+          required: false
+          type: integer
+
+        - name: per_page
+          in: query
+          description: Numero di fatture per pagina
+          default: 10
+          required: false
+          type: integer
+
+      responses:
+        200:
+          description: Lista di Dettagli
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Fattura'
+              pagination:
+                type: object
+                properties:
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+            example:
+              current_page: 1
+              items: [
+                {
+                  "cliente": 20,
+                  "data_vendita": "2017-02-12",
+                  "dettagli": [ ],
+                  "id_fattura": "b100",
+                  "totale": 1000,
+                  "venditore": "VC01"
+                },
+                {
+                  "cliente": 18,
+                  "data_vendita": "2017-01-20",
+                  "dettagli": [ ],
+                  "id_fattura": "b101",
+                  "totale": 2000,
+                  "venditore": "VL02"
+                }
+              ]
+              pagination:
+                per_page: 10
+                total: 150
+                pages: 15
+        404:
+          description: Nessuna fattura trovata
+
+    post:
+      summary: Crea una nuova fattura
+      tags:
+        - Fatture
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Fattura'
+      responses:
+        201:
+          description: Fattura creata
+          schema:
+            $ref: '#/definitions/Fattura'
+        400:
+          description: Dati non validi
+        500:
+          description: Errore durante la creazione
+
+  /fatture/{id}:
+    get:
+      summary: Ottieni una fattura
+      tags:
+        - Fatture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Fattura trovata
+          schema:
+            $ref: '#/definitions/Fattura'
+        404:
+          description: Fattura non trovata
+
+    put:
+      summary: Aggiorna una fattura
+      tags:
+        - Fatture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Fattura'
+      responses:
+        200:
+          description: Fattura aggiornata
+        400:
+          description: Dati non validi
+        404:
+          description: Fattura non trovata
+        500:
+          description: Errore durante l'aggiornamento
+
+    delete:
+      summary: Elimina una fattura
+      tags:
+        - Fatture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Fattura eliminata
+        404:
+          description: Fattura non trovata
+        500:
+          description: Errore durante l'eliminazione
+
+  /fatture/search:
+    get:
+      summary: Ricerca fatture per cliente, venditore o data
+      description: Recupera una lista paginata di fatture filtrate per ID cliente, ID venditore o data_vendita
+      tags:
+        - Fatture
+
+      parameters:
+        - name: id_cliente
+          in: query
+          type: integer
+          description: Filtra per ID Cliente
+          required: false
+
+        - name: id_venditore
+          in: query
+          type: string
+          description: Filtra per ID Venditore
+          required: false
+
+        - name: data_vendita
+          in: query
+          type: string
+          format: date
+          description: "Filtra per data vendita (formato: YYYY-MM-DD)"
+          required: false
+
+        - name: page
+          in: query
+          type: integer
+          description: "Pagina richiesta (default: 1)"
+          required: false
+          default: 1
+
+        - name: per_page
+          in: query
+          type: integer
+          maximum: 100
+          description: "Numero massimo di elementi per pagina (max: 100)"
+          required: false
+          default: 10
+
+      responses:
+        200:
+          description: Risultati della ricerca
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/Fattura'
+              pagination:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+
+        400:
+          description: Parametro non valido (es. data errata)
+
+        404:
+          description: Nessuna fattura trovata con i filtri dati
+
+  /prodotti/:
+    get:
+      summary: Ottieni tutti i prodotti
+      tags:
+        - Prodotti
+
+      parameters:
+        - name: page
+          in: query
+          description: Numero della pagina da restituire
+          default: 1
+          required: false
+          type: integer
+
+        - name: per_page
+          in: query
+          description: Numero di prodotti per pagina
+          default: 10
+          required: false
+          type: integer
+
+      responses:
+        200:
+          description: Lista di Prodotti
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Prodotto'
+              pagination:
+                type: object
+                properties:
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+            example:
+              current_page: 1
+              items: [
+                {
+                  "categoria": "carne",
+                  "costo_di_produzione": 2.9,
+                  "dettagli": [
+                    {
+                      "id_fattura": "R004",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "o1",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "T1",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "I005",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "L1",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "S2",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "N2",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "F004",
+                      "prodotto": "filetto"
+                    },
+                    {
+                      "id_fattura": "E1",
+                      "prodotto": "filetto"
+                    }
+                  ],
+                  "nome": "filetto"
+                },
+                {
+                  "categoria": "carne",
+                  "costo_di_produzione": 2.3,
+                  "dettagli": [
+                    {
+                      "id_fattura": "o1",
+                      "prodotto": "bistecca"
+                    },
+                    {
+                      "id_fattura": "T1",
+                      "prodotto": "bistecca"
+                    },
+                    {
+                      "id_fattura": "L1",
+                      "prodotto": "bistecca"
+                    },
+                    {
+                      "id_fattura": "S2",
+                      "prodotto": "bistecca"
+                    },
+                    {
+                      "id_fattura": "Z03",
+                      "prodotto": "bistecca"
+                    },
+                    {
+                      "id_fattura": "N2",
+                      "prodotto": "bistecca"
+                    },
+                    {
+                      "id_fattura": "F001",
+                      "prodotto": "bistecca"
+                    },
+                    {
+                      "id_fattura": "E2",
+                      "prodotto": "bistecca"
+                    }
+                  ],
+                  "nome": "bistecca"
+                }
+              ]
+              pagination:
+                per_page: 10
+                total: 150
+                pages: 15
+        404:
+          description: Nessun prodotto trovato
+
+    post:
+      summary: Crea un nuovo prodotto
+      tags:
+        - Prodotti
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Prodotto'
+      responses:
+        201:
+          description: Prodotto creato
+          schema:
+            $ref: '#/definitions/Prodotto'
+        400:
+          description: Dati non validi
+        500:
+          description: Errore durante la creazione
+
+  /prodotti/{id}:
+    get:
+      summary: Ottieni un prodotto
+      tags:
+        - Prodotti
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Prodotto trovato
+          schema:
+            $ref: '#/definitions/Prodotto'
+        404:
+          description: Prodotto non trovato
+
+    put:
+      summary: Aggiorna un prodotto
+      tags:
+        - Prodotti
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Prodotto'
+      responses:
+        200:
+          description: Prodotto aggiornato
+        400:
+          description: Dati non validi
+        404:
+          description: Prodotto non trovato
+        500:
+          description: Errore durante l'aggiornamento
+
+    delete:
+      summary: Elimina un prodotto
+      tags:
+        - Prodotti
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Prodotto eliminato
+        404:
+          description: Prodotto non trovato
+        500:
+          description: Errore durante l'eliminazione
+
+  /gestioni/:
+    get:
+      summary: Ottieni tutte le assegnazioni di gestione
+      tags:
+        - Gestione
+
+      parameters:
+        - name: page
+          in: query
+          description: Numero della pagina da restituire
+          default: 1
+          required: false
+          type: integer
+
+        - name: per_page
+          in: query
+          description: Numero di gestioni per pagina
+          default: 10
+          required: false
+          type: integer
+
+      responses:
+        200:
+          description: Lista di gestioni
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Gestione'
+              pagination:
+                type: object
+                properties:
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+            example:
+              current_page: 1
+              items: [
+                {
+                  "categoria": "Latte",
+                  "data_assegnazione": "2020-01-05",
+                  "dipendente": "VL02",
+                  "settore": "Vendita"
+                },
+                {
+                  "categoria": "Carne",
+                  "data_assegnazione": "2020-02-25",
+                  "dipendente": "VL02",
+                  "settore": "Vendita"
+                }
+              ]
+              pagination:
+                per_page: 10
+                total: 150
+                pages: 15
+        404:
+          description: Nessuna gestione trovata
+
+    post:
+      summary: Crea una nuova assegnazione di gestione
+      tags:
+        - Gestione
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Gestione'
+      responses:
+        201:
+          description: Gestione creata
+          schema:
+            $ref: '#/definitions/Gestione'
+        400:
+          description: Dati non validi
+        500:
+          description: Errore durante la creazione
+
+  /gestioni/{id_dipendente}/{data_assegnazione}:
+    get:
+      summary: Ottieni una gestione specifica
+      tags:
+        - Gestione
+      parameters:
+        - name: id_dipendente
+          in: path
+          required: true
+          type: string
+        - name: data_assegnazione
+          in: path
+          required: true
+          type: string
+          format: date
+      responses:
+        200:
+          description: Gestione trovata
+          schema:
+            $ref: '#/definitions/Gestione'
+        404:
+          description: Gestione non trovata
+
+    put:
+      summary: Aggiorna una gestione
+      tags:
+        - Gestione
+      parameters:
+        - name: id_dipendente
+          in: path
+          required: true
+          type: string
+        - name: data_assegnazione
+          in: path
+          required: true
+          type: string
+          format: date
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Gestione'
+      responses:
+        200:
+          description: Gestione aggiornata
+        400:
+          description: Dati non validi
+        404:
+          description: Gestione non trovata
+        500:
+          description: Errore durante l'aggiornamento
+
+    delete:
+      summary: Elimina una gestione
+      tags:
+        - Gestione
+      parameters:
+        - name: id_dipendente
+          in: path
+          required: true
+          type: string
+        - name: data_assegnazione
+          in: path
+          required: true
+          type: string
+          format: date
+      responses:
+        200:
+          description: Gestione eliminata
+        404:
+          description: Gestione non trovata
+        500:
+          description: Errore durante l'eliminazione
+
+  /dettagli/:
+    get:
+      summary: Ottieni tutti i dettagli delle gestioni
+      tags:
+        - Dettagli
+
+      parameters:
+        - name: page
+          in: query
+          description: Numero della pagina da restituire
+          default: 1
+          required: false
+          type: integer
+
+        - name: per_page
+          in: query
+          description: Numero di dettagli per pagina
+          default: 10
+          required: false
+          type: integer
+
+      responses:
+        200:
+          description: Lista dei dettagli
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Dettaglio'
+              pagination:
+                type: object
+                properties:
+                  per_page:
+                    type: integer
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+            example:
+              current_page: 1
+              items: [
+                {
+                  "costo": 8,
+                  "fattura": "R001",
+                  "prodotto_ref": "mozzarella",
+                  "quantita": 2
+                },
+                {
+                  "costo": 0.5,
+                  "fattura": "R001",
+                  "prodotto_ref": "pane",
+                  "quantita": 1
+                }
+              ]
+              pagination:
+                per_page: 10
+                total: 150
+                pages: 15
+        404:
+          description: Nessun dettaglio trovato
+
+    post:
+      summary: Crea un nuovo dettaglio
+      tags:
+        - Dettagli
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Dettaglio'
+      responses:
+        201:
+          description: Dettaglio creato
+          schema:
+            $ref: '#/definitions/Dettaglio'
+        400:
+          description: Dati mancanti o non validi
+        500:
+          description: Errore durante la creazione
+
+  /dettagli/{id_fattura}/{id_prodotto}:
+    get:
+      summary: Ottieni un dettaglio specifico
+      tags:
+        - Dettagli
+      parameters:
+        - name: id_fattura
+          in: path
+          required: true
+          type: string
+        - name: id_prodotto
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Dettaglio trovato
+          schema:
+            $ref: '#/definitions/Dettaglio'
+        404:
+          description: Dettaglio non trovato
+
+    put:
+      summary: Aggiorna un dettaglio
+      tags:
+        - Dettagli
+      parameters:
+        - name: id_fattura
+          in: path
+          required: true
+          type: string
+        - name: id_prodotto
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Dettaglio'
+      responses:
+        200:
+          description: Dettaglio aggiornato
+          schema:
+            $ref: '#/definitions/Dettaglio'
+        400:
+          description: Dati non validi
+        404:
+          description: Dettaglio non trovato
+        500:
+          description: Errore durante l'aggiornamento
+
+    delete:
+      summary: Elimina un dettaglio
+      tags:
+        - Dettagli
+      parameters:
+        - name: id_fattura
+          in: path
+          required: true
+          type: string
+        - name: id_prodotto
+          in: path
+          required: true
+          type: string
+      responses:
+        204:
+          description: Dettaglio eliminato con successo
+        404:
+          description: Dettaglio non trovato
+        500:
+          description: Errore durante l'eliminazione
+
+  /vendite/categorie:
+    get:
+      summary: Totale vendite per categoria
+      tags:
+        - Vendite
+      responses:
+        200:
+          description: Lista delle vendite totali per categoria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/VenditaPerCategoria'
+        404:
+            description: Nessuna vendita trovata
+
+
+definitions:
+  Dipendente:
+    type: object
+    required:
+      - id_dipendente
+      - settore
+    properties:
+      id_dipendente:
+        type: string
+        maxLength: 25
+      nome:
+        type: string
+        maxLength: 50
+      cognome:
+        type: string
+        maxLength: 50
+      stipendio:
+        type: number
+        format: float
+        minimum: 0
+      settore:
+        type: string
+        enum: [ produzione, vendita, direzione, Controllo Qualità ]
+      categoria:
+        type: string
+        enum: [ latte, carne, grano, null ]
+  
+  Cliente:
+    type: object
+    required:
+      - nome
+      - cognome
+      - citta
+      - codice_fiscale
+    properties:
+      id_cliente:
+        type: integer
+        readOnly: true
+      nome:
+        type: string
+        maxLength: 50
+      cognome:
+        type: string
+        maxLength: 50
+      citta:
+        type: string
+        maxLength: 50
+      codice_fiscale:
+        type: string
+        maxLength: 16
+        pattern: '^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$'
+        description: Codice fiscale del cliente, formato italiano
+        example: 'RSSMRA85M01H501Z'
+
+  Fattura:
+    type: object
+    required:
+      - id_cliente
+      - data_vendita
+      - totale
+    properties:
+      id_fattura:
+        type: string
+      id_cliente:
+        type: integer
+        description: ID del cliente a cui è associata la fattura
+      id_venditore:
+        type: string
+        description: ID del venditore a cui è associata la fattura
+      data_vendita:
+        type: string
+        format: date
+        description: Data della fattura (YYYY-MM-DD)
+      totale:
+        type: number
+        format: float
+        minimum: 0
+        description: Importo totale della fattura
+
+  Prodotto:
+    type: object
+    required:
+      - nome
+      - categoria
+      - costo_di_produzione
+    properties:
+      nome:
+        type: string
+        maxLength: 100
+        description: Nome univoco del prodotto
+      categoria:
+        type: string
+        enum: [ latte, carne, grano ]
+        description: Categoria del prodotto
+      costo_di_produzione:
+        type: number
+        format: float
+        minimum: 0.01
+        description: Costo di produzione del prodotto
+
+  Gestione:
+    type: object
+    required:
+      - id_dipendente
+      - data_assegnazione
+      - settore
+    properties:
+      id_dipendente:
+        type: string
+        maxLength: 25
+      data_assegnazione:
+        type: string
+        format: date
+      settore:
+        type: string
+        maxLength: 20
+      categoria:
+        type: string
+        maxLength: 20
+
+  Dettaglio:
+    type: object
+    required:
+      - id_fattura
+      - prodotto
+      - quantita
+      - costo
+    properties:
+      id_fattura:
+        type: string
+        maxLength: 25
+        description: ID della fattura associata
+      prodotto:
+        type: string
+        maxLength: 100
+        description: Nome del prodotto associato
+      quantita:
+        type: integer
+        minimum: 1
+        description: Quantità del prodotto nella fattura
+      costo:
+        type: number
+        format: float
+        minimum: 0
+        description: Costo del prodotto nel dettaglio
+
+  VenditaPerCategoria:
+    type: object
+    properties:
+      categoria:
+        type: string
+      totale_vendite:
+        type: number
+        format: float

@@ -1,0 +1,36 @@
+tags:
+  - Dipendente
+
+summary: Restituisce un dipendente per ID
+description: Recupera i dati di un dipendente specifico usando l’ID fornito nell’URL.
+
+parameters:
+  - name: id
+    in: path
+    description: ID del dipendente da recuperare
+    required: true
+    schema:
+      type: string
+
+responses:
+  200:
+    description: Dati del dipendente
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id_dipendente:
+              type: string
+            nome:
+              type: string
+            cognome:
+              type: string
+            stipendio:
+              type: number
+            settore:
+              type: string
+            categoria:
+              type: string
+  404:
+    description: Dipendente non trovato
