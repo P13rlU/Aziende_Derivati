@@ -32,6 +32,25 @@ def get_all_fatture():
 
     return jsonify(format_paginated_result(fatture, fatture_schema)), 200
 
+@fatture_bp.route('/categorie', methods=['GET'])
+def get_categorie_fatture():
+    """
+    Endpoint to retrieve all product categories with invoice counts.
+    """
+    logger.info("GET /fatture/categorie - Request to retrieve invoice categories")
+
+    try:
+        categorie = fattura_service.categorie_fatture()
+        if not categorie:
+            logger.warning("GET /fatture/categorie - No categories found")
+            return {"error": "No categories found"}, 404
+
+        logger.info(f"GET /fatture/categorie - Found {len(categorie)} categories")
+        return jsonify(categorie), 200
+
+    except Exception as e:
+        logger.error(f"GET /fatture/categorie - Error: {str(e)}")
+        return {"error": "Internal server error"}, 500
 
 @fatture_bp.route('/<string:id_fattura>', methods=['GET'])
 def get_fattura(id_fattura):
@@ -139,7 +158,7 @@ def delete_fattura(id_fattura):
         return jsonify({"error": "Error deleting invoice", "details": str(e)}), 500
 
 
-@fatture_bp.route('/search', methods=['GET'])
+@fatture_bp.route('/advanced/search', methods=['GET'])
 def search_fatture():
     """
     Endpoint di ricerca fatture per cliente_id, venditore_id o data_vendita
@@ -176,3 +195,49 @@ def search_fatture():
     except Exception as e:
         logger.error(f"GET /fatture/search - Server error: {str(e)}")
         return jsonify({"error": "Error searching invoices", "details": str(e)}), 500
+
+
+@fatture_bp.route('/dettagli/categorie', methods=['GET'])
+def get_dettaglio_categoria():
+    """
+    Endpoint per tornare le fatture che hanno in dettaglio prodotti con categoria differente
+    """
+
+    logger.info("GET /fatture/categorie - Request to get total invoices per category")
+
+    try:
+        categorie = fattura_service.fatture_per_dettaglio_categoria()
+        if not categorie:
+            logger.warning("GET /fatture/categorie - No categories found")
+            return {"error": "No categories found"}, 404
+
+        logger.info(f"GET /fatture/categorie - Found {len(categorie)} categories with invoices")
+        return jsonify(categorie), 200
+
+    except Exception as e:
+        logger.error(f"GET /fatture/categorie - Error: {str(e)}")
+        return {"error": "Internal server error"}, 500
+
+@fatture_bp.route('/categoria/<string:categoria>', methods=['GET'])
+def get_fatture_by_categoria(categoria):
+    """
+    Endpoint to retrieve invoices by product category.
+    """
+    logger.info(f"GET /fatture/categoria/{categoria} - Request to retrieve invoices for category {categoria}")
+
+    page, per_page = get_pagination_params()
+
+    try:
+        fatture = fattura_service.fatture_by_categoria(categoria, page, per_page)
+
+        if not fatture.items:
+            logger.warning(f"GET /fatture/categoria/{categoria} - No invoices found for category {categoria}")
+            return {"error": f"No invoices found for category {categoria}"}, 404
+
+        logger.info(
+            f"GET /fatture/categoria/{categoria} - Found {len(fatture.items)} invoices for category {categoria}")
+        return jsonify(format_paginated_result(fatture, fatture_schema)), 200
+
+    except Exception as e:
+        logger.error(f"GET /fatture/categoria/{categoria} - Error: {str(e)}")
+        return jsonify({"error": "Error retrieving invoices", "details": str(e)}), 500

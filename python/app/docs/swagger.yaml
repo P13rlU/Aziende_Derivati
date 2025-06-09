@@ -465,7 +465,7 @@ paths:
         500:
           description: Errore durante l'eliminazione
 
-  /fatture/search:
+  /fatture/advanced/search:
     get:
       summary: Ricerca fatture per cliente, venditore o data
       description: Recupera una lista paginata di fatture filtrate per ID cliente, ID venditore o data_vendita
@@ -534,6 +534,85 @@ paths:
 
         404:
           description: Nessuna fattura trovata con i filtri dati
+
+  /fatture/dettagli/categorie:
+    get:
+      summary: Restituisce le fatture che includono prodotti di più categorie
+      description: |
+        Endpoint che recupera tutte le fatture che hanno almeno due prodotti appartenenti a categorie diversi.
+        Utile per analisi o report avanzati.
+      tags:
+        - Fatture
+
+      responses:
+        200:
+          description: Lista di fatture con dettagli multi-categoria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FatturaDettaglioCategoria'
+        404:
+          description: Nessuna fattura trovata con prodotti di categorie diverse
+        500:
+          description: Errore interno del server
+
+  /fatture/categorie:
+    get:
+      summary: Restituisce il totale delle fatture per categoria
+      tags:
+        - Fatture
+      responses:
+        200:
+          description: Lista delle fatture totali per categoria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FatturaCategoriaCount'
+        404:
+          description: Nessuna fattura trovata
+
+  /fatture/categoria/{categoria}:
+    get:
+      summary: Recupera le fatture che includono prodotti della categoria specificata
+      description: |
+        Endpoint che restituisce una lista paginata di fatture filtrate per categoria di prodotto.
+        La categoria è passata come parametro nell'URL.
+      tags:
+        - Fatture
+
+      parameters:
+        - name: categoria
+          in: path
+          description: Categoria del prodotto (es. latte, carne, grano)
+          required: true
+          type: string
+
+        - name: page
+          in: query
+          description: "Numero della pagina richiesta (default: 1)"
+          default: 1
+          required: false
+          type: integer
+
+        - name: per_page
+          in: query
+          description: "Elementi per pagina (default: 10, max: 100)"
+          default: 10
+          maximum: 100
+          required: false
+          type: integer
+
+      responses:
+        200:
+          description: Lista paginata di fatture appartenenti alla categoria
+          schema:
+            $ref: '#/definitions/PaginatedFattureByCategoria'
+
+        404:
+          description: Nessuna fattura trovata per questa categoria
+
+        500:
+          description: Errore interno durante il recupero delle fatture
 
   /prodotti/:
     get:
@@ -1154,6 +1233,131 @@ definitions:
         format: float
         minimum: 0
         description: Importo totale della fattura
+
+  FatturaDettaglioCategoria:
+    type: object
+    properties:
+      id_fattura:
+        type: string
+        example: "F001"
+        description: "ID della fattura"
+
+      data_vendita:
+        type: string
+        format: date-time
+        example: "Tue, 06 Feb 2018 00:00:00 GMT"
+        description: "Data dell'acquisto"
+
+      numero_categorie:
+        type: integer
+        example: 3
+        description: "Numero di categorie di prodotto nella fattura"
+
+      totale:
+        type: number
+        example: 128.9
+        description: "Totale importo della fattura"
+    required:
+      - id_fattura
+      - data_vendita
+      - numero_categorie
+      - totale
+
+  FatturaCategoriaCount:
+    type: object
+    properties:
+      categoria:
+        type: string
+        example: "latte"
+        description: "Nome della categoria di prodotto (es. latte, carne, grano)"
+      count:
+        type: integer
+        example: 36
+        description: "Numero di fatture che includono prodotti di questa categoria"
+    required:
+      - categoria
+      - count
+
+  PaginatedFattureByCategoria:
+    type: object
+    properties:
+      current_page:
+        type: integer
+        example: 1
+        description: "Numero della pagina attuale"
+
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/FatturaWithDettagli"
+        description: "Lista di fatture con dettaglio prodotti"
+
+      per_page:
+        type: integer
+        example: 10
+        description: "Numero di elementi per pagina"
+
+      total:
+        type: integer
+        example: 63
+        description: "Totale di fatture disponibili per questa categoria"
+
+      pages:
+        type: integer
+        example: 7
+        description: "Totale pagine disponibili"
+
+  FatturaWithDettagli:
+    type: object
+    properties:
+      id_fattura:
+        type: string
+        example: "R001"
+        description: "ID della fattura"
+
+      data_vendita:
+        type: string
+        format: date-time
+        example: "2022-08-11T00:00:00Z"
+        description: "Data dell'acquisto"
+
+      totale:
+        type: number
+        example: 22.5
+        description: "Importo totale della fattura"
+
+      venditore:
+        type: string
+        example: "VC01"
+        description: "ID del venditore"
+
+      cliente:
+        type: integer
+        example: 12
+        description: "ID del cliente"
+
+      dettagli:
+        type: array
+        items:
+          $ref: "#/definitions/DettaglioProdotto"
+        description: "Prodotti nella fattura"
+
+  DettaglioProdotto:
+    type: object
+    properties:
+      id_fattura:
+        type: string
+        example: "R001"
+        description: "ID della fattura"
+
+      prodotto:
+        type: string
+        example: "mozzarella"
+        description: "Nome del prodotto"
+
+    required:
+      - id_fattura
+      - prodotto
 
   Prodotto:
     type: object
