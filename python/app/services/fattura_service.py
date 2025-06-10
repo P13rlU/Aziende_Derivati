@@ -1,6 +1,8 @@
 from sqlalchemy import cast, Date
+from sqlalchemy.exc import IntegrityError
 
-from app.models import Fattura, Prodotto, Dettaglio
+from app.models import Fattura, Prodotto, Dettaglio, Cliente
+from app.schemas.fattura_dettagli_post_schema import fattura_post_schema
 from app.schemas.fattura_write_schema import fattura_write_schema
 from datetime import datetime
 
@@ -143,3 +145,57 @@ class FatturaService:
                 .join(Prodotto, Dettaglio.prodotto == Prodotto.nome)
                 .filter(Prodotto.categoria == categoria)
                 .paginate(page=page, per_page=per_page, error_out=False))
+
+    def create_fattura_with_dettagli(self, data):
+        """
+                Crea una fattura e i relativi dettagli partendo da un oggetto JSON.
+                """
+        try:
+            validated_data = fattura_post_schema.load(data)
+
+            # Cerca il cliente tramite codice fiscale
+            cliente = Cliente.query.filter(Cliente.codice_fiscale == validated_data['cf_cliente']).first()
+            if not cliente:
+                raise ValueError("Cliente non trovato per il codice fiscale fornito")
+
+            # Estrai i dati per la fattura
+            id_cliente = cliente.id_cliente
+            id_fattura = validated_data["id_fattura"]
+            id_venditore = validated_data["venditore"]
+            data_vendita = validated_data["data_vendita"]
+
+            # Calcola il totale
+            totale = sum(d["quantita"] * d["costo"] for d in validated_data["dettagli"])
+
+            # Crea la fattura
+            nuova_fattura = Fattura(
+                id_fattura=id_fattura,
+                id_venditore=id_venditore,
+                id_cliente=id_cliente,
+                data_vendita=data_vendita,
+                totale=totale
+            )
+
+            self.db.session.add(nuova_fattura)
+
+            # Crea i dettagli
+            for dettaglio in validated_data["dettagli"]:
+                nuovo_dettaglio = Dettaglio(
+                    id_fattura=id_fattura,
+                    prodotto=dettaglio["prodotto"],
+                    quantita=dettaglio["quantita"],
+                    costo=dettaglio["costo"]
+                )
+                self.db.session.add(nuovo_dettaglio)
+
+            self.db.session.commit()
+
+            return nuova_fattura
+
+        except IntegrityError as e:
+            self.db.session.rollback()
+            raise ValueError("ID Fattura duplicato o errore sui dettagli") from e
+
+        except Exception as e:
+            self.db.session.rollback()
+            raise e

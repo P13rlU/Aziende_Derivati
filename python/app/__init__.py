@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from app.extensions import db, ma, swagger
+from app.routes.xml_route import xml_bp
 from app.utils.json_encoder import CustomJSONProvider
 from app.errors.handlers import register_error_handlers
 from app.routes.dipendente_route import dipendenti_bp
@@ -50,6 +51,7 @@ def create_app(test_config=None):
     app.register_blueprint(dettagli_bp)
     app.register_blueprint(gestioni_bp)
     app.register_blueprint(vendite_bp)
+    app.register_blueprint(xml_bp)
 
     return app
 

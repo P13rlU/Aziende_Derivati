@@ -241,3 +241,28 @@ def get_fatture_by_categoria(categoria):
     except Exception as e:
         logger.error(f"GET /fatture/categoria/{categoria} - Error: {str(e)}")
         return jsonify({"error": "Error retrieving invoices", "details": str(e)}), 500
+
+@fatture_bp.route('/inserimento/fattura_dettagli', methods=['POST'])
+def create_fattura_dettagli():
+    """
+        Endpoint to create a new invoice with details.
+        """
+    logger.info("POST /fatture - Request to create a new invoice with details")
+
+    data = request.get_json()
+
+    if not data:
+        logger.error("POST /fatture - No input data provided")
+        return jsonify({"error": "No input data provided"}), 400
+
+    try:
+        fattura = fattura_service.create_fattura_with_dettagli(data)
+        return fattura_schema.dump(fattura), 201
+
+    except ValueError as ve:
+        logger.warning(f"POST /fatture - Validation error: {str(ve)}")
+        return jsonify({"error": str(ve)}), 404
+
+    except Exception as e:
+        logger.error(f"POST /fatture - Error creating invoice: {str(e)}")
+        return jsonify({"error": "Error creating invoice", "details": str(e)}), 500

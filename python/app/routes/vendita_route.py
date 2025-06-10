@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 from app.services.vendita_service import VenditaService
 from app.extensions import db
 import logging

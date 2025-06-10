@@ -614,6 +614,38 @@ paths:
         500:
           description: Errore interno durante il recupero delle fatture
 
+  /fatture/inserimento/fattura_dettagli:
+    post:
+      summary: Crea una nuova fattura con dettagli
+      description: |
+        Crea una fattura e i suoi dettagli in un'unica chiamata.
+        Usa il campo `cf_cliente` per trovare l'id_cliente corretto.
+      tags:
+        - Fatture
+
+      parameters:
+        - name: body
+          in: body
+          description: Dati della fattura da creare
+          required: true
+          schema:
+            $ref: "#/definitions/FatturaWithDettagliPost"
+
+      responses:
+        201:
+          description: Fattura creata con successo
+          schema:
+            $ref: "#/definitions/FatturaWithDettagliOutput"
+        400:
+          description: Dati non validi
+        404:
+          description: Cliente non trovato per il codice fiscale
+        500:
+          description: Errore interno durante la creazione
+
+#      security:
+#        - bearerAuth: []
+
   /prodotti/:
     get:
       summary: Ottieni tutti i prodotti
@@ -1066,7 +1098,7 @@ paths:
         500:
           description: Errore durante la creazione
 
-  /dettagli/{id_fattura}/{id_prodotto}:
+  /dettagli/{id_fattura}/{nome_prodotto}:
     get:
       summary: Ottieni un dettaglio specifico
       tags:
@@ -1076,7 +1108,7 @@ paths:
           in: path
           required: true
           type: string
-        - name: id_prodotto
+        - name: nome_prodotto
           in: path
           required: true
           type: string
@@ -1153,6 +1185,80 @@ paths:
               $ref: '#/definitions/VenditaPerCategoria'
         404:
             description: Nessuna vendita trovata
+
+  /xml/cliente:
+    get:
+      summary: Genera un report XML per un cliente
+      description: |
+        Genera un report XML basato sul codice fiscale del cliente.
+        Il report contiene tutti gli ordini effettuati da quel cliente.
+      tags:
+        - Reportistica XML
+      parameters:
+        - name: cf_cliente
+          in: query
+          type: string
+          required: true
+      responses:
+        200:
+          description: Report XML generato
+          schema:
+            type: string
+            format: xml
+            example: |
+              <?xml version="1.0" ?>
+              <report>
+                <cliente>Mario Rossi</cliente>
+                <ordini>
+                  <ordine data="2024-10-05" id_fattura="F001">
+                    <prodotto nome="filetto" quantita="3" costo="10.6" totale="31.8"/>
+                    <prodotto nome="pane" quantita="2" costo="1.5" totale="3.0"/>
+                  </ordine>
+                </ordini>
+              </report>
+        400:
+          description: Codice fiscale mancante o non valido
+        404:
+          description: Cliente non trovato
+        500:
+          description: Errore interno durante la generazione del report
+
+  /xml/prodotto:
+    get:
+      summary: Genera un report XML per un prodotto
+      description: |
+        Genera un report XML con tutte le volte che un prodotto è stato venduto,
+        mostrando il cliente e l'importo totale.
+      tags:
+        - Reportistica XML
+      parameters:
+        - name: nome
+          in: query
+          type: string
+          required: true
+      responses:
+        200:
+          description: Report XML generato
+          schema:
+            type: string
+            format: xml
+            example: |
+              <?xml version="1.0" ?>
+              <report>
+                <prodotto>filetto</prodotto>
+                <vendite>
+                  <ordine data="2024-10-05" cliente="Mario Rossi">
+                    <quantita>3</quantita>
+                    <totale>31.8</totale>
+                  </ordine>
+                </vendite>
+              </report>
+        400:
+          description: Nome prodotto richiesto
+        404:
+          description: Prodotto non trovato
+        500:
+          description: Errore durante la generazione del report
 
 
 definitions:
@@ -1278,6 +1384,32 @@ definitions:
       - categoria
       - count
 
+  FatturaWithDettagliOutput:
+    type: object
+    properties:
+      id_fattura:
+        type: string
+      id_venditore:
+        type: string
+      id_cliente:
+        type: integer
+      data_vendita:
+        type: string
+        format: date
+      totale:
+        type: number
+      dettagli:
+        type: array
+        items:
+          type: object
+          properties:
+            prodotto:
+              type: string
+            quantita:
+              type: integer
+            costo:
+              type: number
+
   PaginatedFattureByCategoria:
     type: object
     properties:
@@ -1341,6 +1473,42 @@ definitions:
         items:
           $ref: "#/definitions/DettaglioProdotto"
         description: "Prodotti nella fattura"
+
+  FatturaWithDettagliPost:
+    type: object
+    properties:
+      cf_cliente:
+        type: string
+        example: "RSSMRA90A01H501Z"
+        description: "Codice fiscale del cliente"
+      data_vendita:
+        type: string
+        format: date
+        example: "2024-10-05"
+      id_fattura:
+        type: string
+        example: "C001"
+      venditore:
+        type: string
+        example: "VL02"
+      dettagli:
+        type: array
+        items:
+          type: object
+          properties:
+            prodotto:
+              type: string
+              example: "filetto"
+            quantita:
+              type: integer
+              example: 3
+            costo:
+              type: number
+              example: 10.6
+          required:
+            - prodotto
+            - quantita
+            - costo
 
   DettaglioProdotto:
     type: object
@@ -1434,3 +1602,10 @@ definitions:
       totale_vendite:
         type: number
         format: float
+
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: "Inserisci il token JWT nel formato: `Bearer {token}`"
