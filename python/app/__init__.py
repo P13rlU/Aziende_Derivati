@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from app.extensions import db, ma, swagger
 from app.routes.xml_route import xml_bp
 from app.utils.json_encoder import CustomJSONProvider
@@ -33,6 +34,9 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     swagger.template_file = 'docs/swagger.yaml'
     swagger.init_app(app)
