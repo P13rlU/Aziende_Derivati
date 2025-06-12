@@ -7,7 +7,7 @@ const ClientePage: React.FC = () => {
     const [fatture, setFatture] = useState<Fattura[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/fatture')
+        fetch('http://localhost:5000/fatture/')
             .then(res => res.json())
             .then(data => setFatture(data.items || []))
             .catch(err => console.error(err));

@@ -9,7 +9,7 @@ const DipendentePage: React.FC = () => {
 
     // Recupera tutti i dipendenti
     useEffect(() => {
-        fetch('http://localhost:5000/dipendenti')
+        fetch('http://localhost:5000/dipendenti/')
             .then(res => res.json())
             .then(data => setDipendenti(data.items || []))
             .catch(err => console.error(err));
@@ -17,7 +17,7 @@ const DipendentePage: React.FC = () => {
 
     // Recupera fatture (esempio)
     useEffect(() => {
-        fetch('http://localhost:5000/fatture')
+        fetch('http://localhost:5000/fatture/')
             .then(res => res.json())
             .then(data => setFatture(data.items || []))
             .catch(err => console.error(err));
