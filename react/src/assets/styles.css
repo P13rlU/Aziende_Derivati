@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 2rem;
+    background-color: #232323;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    padding: 0;
+}
+
+nav li {
+    margin: 0 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    border: 1px solid #444444;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #4b4b4b;
+}
