@@ -85,8 +85,7 @@ def create_dipendente():
         return jsonify({"error": "Errore nela creazione del dipendente", "details": str(e)}), 500
 
 
-@dipendenti_bp.route('/<string:id_dipendente>', methods=['PUT'])  # update
-# @swag_from('../docs/dipendente/update.yaml')
+@dipendenti_bp.route('/<string:id_dipendente>', methods=['PUT'])
 def update_dipendente(id_dipendente):
     """
     Endpoint to update an existing dipendente.

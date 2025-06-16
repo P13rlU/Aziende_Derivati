@@ -26,3 +26,5 @@ EndPoint Backend
 23. [x] aggiungere codice fiscale a cliente
 24. [x] get numero fatture per categoria
 25. [ ] implementare jwt per autenticazione
+26. [x] implementare che la gestione venga popolata quando si fa l'update del reparto del dipendente\
+27. [x] vedere se quando viene eliminata una fattura, vengono eliminati anche i dettagli della fattura

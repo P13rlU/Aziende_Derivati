@@ -18,4 +18,4 @@ class Fattura(db.Model):
 
     venditore = relationship("Dipendente", back_populates="fatture")
     cliente = relationship("Cliente", back_populates="fatture")
-    dettagli = relationship("Dettaglio", back_populates="fattura")
+    dettagli = relationship("Dettaglio", back_populates="fattura", cascade="all, delete")
