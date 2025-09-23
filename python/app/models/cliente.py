@@ -1,4 +1,3 @@
-from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import relationship
 from app.extensions import db
 
