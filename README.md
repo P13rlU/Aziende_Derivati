@@ -122,15 +122,3 @@ Le librerie più importanti che il progetto Python usa:
 > Vedi `requirements.txt` per la lista completa.
 
 ---
-
-## Testing (se presente)
-
-- Se ci sono unit tests o test di integrazione, indicazioni su come lanciarli, per esempio con `pytest`:
-
-  ```bash
-  pytest
-  ```
-
-- Dove sono i file di test (cartella `tests/` oppure dentro `python/tests/`)
-
----
