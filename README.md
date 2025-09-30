@@ -15,8 +15,6 @@ Repo: [Aziende_Derivati](https://github.com/P13rlU/Aziende_Derivati)
 5. [Configurazione](#configurazione)
 6. [Esecuzione](#esecuzione)
 7. [Dipendenze principali](#dipendenze-principali)
-8. [Testing (se presente)](#testing-se-presente)
-9. [License](#license)
 
 ---
 
