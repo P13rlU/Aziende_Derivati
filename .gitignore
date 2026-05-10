@@ -613,5 +613,8 @@ sketch
 # that are supposed to be shared within teams.
 
 .idea
+docker-compose.yaml
+oracle_backup/
+python/dockerfile
 
 # End of https://www.toptal.com/developers/gitignore/api/flask,intellij,intellij+all,pycharm+all,pycharm,webstorm,webstorm+all,react
